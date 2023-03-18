@@ -1,4 +1,6 @@
 <script>
+	// @ts-nocheck
+
 	import { basket } from '../../stores';
 	import { goto } from '$app/navigation';
 	import { loadStripe } from '@stripe/stripe-js';
@@ -14,6 +16,10 @@
 	basket.subscribe((value) => {
 		basket_array = value;
 	});
+	function calculateTotal(basket_array) {
+		let total = basket_array.reduce((n, { price, qty }) => n + price * qty, 0);
+		return total;
+	}
 
 	let stripe = null;
 
@@ -40,12 +46,12 @@
 			processing = false;
 		} else {
 			// payment succeeded, redirect to "thank you" page
-			goto('/examples/payment-element/thanks');
+			goto('/thanks');
 		}
 	}
 </script>
 
-<div class="h-screen bg-gradient-to-br from-[#06beb6] to-[#48b1bf]">
+<div class="min-h-screen bg-gradient-to-br from-[#06beb6] to-[#48b1bf]">
 	<div class="container max-w-sm md:max-w-screen-md lg:max-w-screen-lg mx-auto py-8">
 		{#each basket_array as product}
 			<div class="py-4 flex justify-evenly items-center border border-white rounded-xl">
@@ -65,23 +71,28 @@
 				</div>
 			</div>
 		{/each}
+		<div class="py-8 flex justify-between">
+			<div class="">Total:</div>
+			<div class="">${calculateTotal(basket_array) / 100}</div>
+		</div>
 	</div>
 	<div class="container max-w-sm md:max-w-screen-md lg:max-w-screen-lg mx-auto">
-		<h1>Checkout!</h1>
 		{#if stripe}
 			<Elements {stripe} {clientSecret} bind:elements>
 				<form on:submit|preventDefault={submit}>
 					<LinkAuthenticationElement />
 					<PaymentElement />
-					<Address mode="billing" />
 
-					<button disabled={processing}>
-						{#if processing}
-							Processing...
-						{:else}
-							Pay
-						{/if}
-					</button>
+					<Address mode="shipping" />
+					<div class="text-center ">
+						<button disabled={processing} class="py-4 px-8 bg-white rounded-xl mt-8">
+							{#if processing}
+								Processing...
+							{:else}
+								Pay
+							{/if}
+						</button>
+					</div>
 				</form>
 			</Elements>
 		{/if}
