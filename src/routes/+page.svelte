@@ -2,9 +2,7 @@
 	import ProductCard from '../components/ProductCard.svelte';
 	import type { PageData } from './$types';
 	export let data: PageData;
-	let {productArray} = data;
-	console.log(productArray);
-	
+	let { productArray } = data;
 </script>
 
 <main>

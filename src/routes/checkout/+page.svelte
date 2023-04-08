@@ -2,16 +2,21 @@
 	// @ts-nocheck
 
 	import { basket } from '../../stores';
+	import { supabaseClient } from '$lib/supabase';
 	import { goto } from '$app/navigation';
 	import { loadStripe } from '@stripe/stripe-js';
 	import { Elements, PaymentElement, LinkAuthenticationElement, Address } from 'svelte-stripe';
 	import { onMount } from 'svelte';
+	import { beforeNavigate } from '$app/navigation';
+	import { PUBLIC_STRIPE_PUBLISHABLE_KEY } from '$env/static/public';
+
 	export let data;
+
 	let elements;
 	let processing = false;
 	let error = null;
 	let basket_array;
-	let clientSecret = data.data;
+	let { clientSecret, id: paymentIntentId } = data;
 
 	basket.subscribe((value) => {
 		basket_array = value;
@@ -24,9 +29,16 @@
 	let stripe = null;
 
 	onMount(async () => {
-		stripe = await loadStripe(
-			'pk_test_51JnRvABq6A81Gm86wtF7mnmLYB5WtOcqRo259wi7WtcR7t9S53HIibEPRY6QXaD0891UxUDB0ZxEzcrzvyG4Pt9u00Sg99Kfhj'
-		);
+		stripe = await loadStripe(PUBLIC_STRIPE_PUBLISHABLE_KEY);
+	});
+
+	beforeNavigate(async ({}) => {
+		let updateOrderInventory = await fetch('/api/update-order-inventory', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ paymentIntentId: paymentIntentId })
+		});
+		$basket = [];
 	});
 
 	async function submit() {
@@ -39,13 +51,16 @@
 			redirect: 'if_required'
 		});
 		// log results, for debugging
-		console.log({ result });
+		console.log('result:', result);
 		if (result.error) {
 			// payment failed, notify user
 			error = result.error;
 			processing = false;
 		} else {
 			// payment succeeded, redirect to "thank you" page
+			console.log('result:', result);
+
+			//push payment intent id into database, under ADMIN pannel, read in orders and denote succeeded/paid orders from abandoned orders from stripe api
 			goto('/thanks');
 		}
 	}
@@ -67,7 +82,7 @@
 				<div
 					class="h-16 aspect-square overflow-hidden border border-white rounded-full flex justify-center items-center"
 				>
-					<img src={product.imgURL} />
+					<img src={product.imgURL} alt={product.name} />
 				</div>
 			</div>
 		{/each}

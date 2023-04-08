@@ -72,16 +72,20 @@
 		<div class="py-2">
 			<div class="font-bold text-center mb-4">Inventory</div>
 			<div class="flex items-center justify-between">
-				<div>on hand</div>
-				<input type="number" class="w-1/4 mb-2" bind:value={productSelected.metadata.onHand} />
+				<div>In A Basket</div>
+				<input type="number" class="w-1/4 mb-2" bind:value={productSelected.metadata.in_a_basket} />
 			</div>
 			<div class="flex items-center justify-between">
-				<div>committed</div>
-				<input type="number" class="w-1/4 mb-2" bind:value={productSelected.metadata.committed} />
+				<div>Sold</div>
+				<input type="number" class="w-1/4 mb-2" bind:value={productSelected.metadata.sold} />
 			</div>
 			<div class="flex items-center justify-between">
 				<div>Available</div>
 				<input type="number" class="w-1/4 mb-2" bind:value={productSelected.metadata.available} />
+			</div>
+			<div class="flex items-center justify-between">
+				<div>Total</div>
+				<input type="number" class="w-1/4 mb-2" bind:value={productSelected.metadata.total} />
 			</div>
 		</div>
 		<div class="py-2">

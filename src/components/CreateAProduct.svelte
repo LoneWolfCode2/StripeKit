@@ -146,9 +146,7 @@
 				<input type="text" bind:value={statementDescriptor} />
 			</div>
 		</div>
-		<div
-			class="bg-[rgba(255,255,255,0.15)] backdrop-blur w-full p-4 rounded w-fit border border-white "
-		>
+		<div class="bg-[rgba(255,255,255,0.15)] backdrop-blur w-full p-4 rounded border border-white ">
 			<h1 class="font-extrabold text-xl mb-4">
 				Product Photos <span class="text-red-500">*</span>
 			</h1>
