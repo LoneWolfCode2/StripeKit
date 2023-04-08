@@ -2,11 +2,11 @@
 /** @type {import('./$types').RequestHandler} */
 import Stripe from 'stripe';
 import { supabaseClient } from '$lib/supabase';
-import { PRIVATE_STRIPE_SECRET_KEY } from '$env/static/private';
+import { PRIVATE_STRIPE_SECRET_KEY, PRIVATE_STRIPE_SIGNING_SECRET } from '$env/static/private';
 // @ts-ignore
 const stripe = new Stripe(PRIVATE_STRIPE_SECRET_KEY);
 
-const endpointSecret = 'whsec_f9c35f4290391e5705155883893d44748427ab7f592771b8aef98747d04e70b1';
+const endpointSecret = PRIVATE_STRIPE_SIGNING_SECRET;
 export async function POST({ request }) {
 	let body = await request.text();
 	const sig = request.headers.get('stripe-signature');
