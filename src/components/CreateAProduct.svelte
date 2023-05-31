@@ -2,9 +2,8 @@
 	// @ts-nocheck
 
 	import { supabaseClient } from '$lib/supabase';
-	import { bind } from 'svelte/internal';
 	import { fade } from 'svelte/transition';
-	let productImageUrlArray = [];
+	$: productImageUrlArray = [];
 	//expiramtental
 	let input;
 	let container;
@@ -37,15 +36,15 @@
 		const { error } = await supabaseClient.storage
 			.from('productimages')
 			.upload(`image${random}`, img);
-		const { data } = await supabaseClient.storage
-			.from('productimages')
-			.getPublicUrl(`image${random}`);
-		const { publicUrl } = await data;
+		const { data } = supabaseClient.storage.from('productimages').getPublicUrl(`image${random}`);
+		const { publicUrl } = data;
 		if (error) {
 			console.log(error);
 		} else {
 			productImageUrlArray.push(publicUrl);
+			productImageUrlArray = productImageUrlArray;
 		}
+		console.log(productImageUrlArray);
 	};
 	let createProduct = async () => {
 		fetch('api/create-a-product', {
@@ -73,7 +72,6 @@
 	};
 	function onChange() {
 		const file = input.files[0];
-		console.log('onChange hit');
 		if (file) {
 			showImage = true;
 
@@ -89,150 +87,170 @@
 	}
 </script>
 
-<div in:fade out:fade class="p-2 bg-gradient-to-br mt-8 from-[#eecda3] to-[#ef629f] rounded-xl">
+<div in:fade out:fade class="p-2 mt-8 rounded-xl">
 	<div class="text-red-500 mb-2">*CANNOT BE CHANGED</div>
-	<form on:submit|preventDefault={createProduct} class="grid md:grid-cols-3 gap-4">
-		<div class="bg-[rgba(255,255,255,0.15)] backdrop-blur p-4 rounded w-fit border border-white">
-			<h1 class="font-extrabold text-3xl mb-4">Product Info</h1>
-			<div class="">
-				<label>Product Name</label>
-				<input bind:value={productName} type="text" />
-			</div>
-			<div class="">
-				<label>Active?</label>
-				<input type="checkbox" bind:checked={active} />
-			</div>
-			<div class="">
-				<label>Description</label>
-				<input type="text" bind:value={description} />
+	<form on:submit|preventDefault={createProduct} class="grid md:grid-cols-12 gap-4">
+		<div
+			class="bg-[rgba(255,255,255,0.15)] backdrop-blur p-4 rounded border border-white col-span-4"
+		>
+			<h1 class="font-extrabold text-xl mb-4">Product Information</h1>
+
+			<div class="flex flex-col justify-evenly">
+				<div class="flex justify-between items-center">
+					<label>Product Name</label>
+					<input bind:value={productName} type="text" class="max-w-[50%]" />
+				</div>
+				<div class="flex justify-between items-center">
+					<label>Active?</label>
+					<input type="checkbox" bind:checked={active} />
+				</div>
+				<div class="flex justify-between items-center">
+					<label>Description</label>
+					<input type="text" bind:value={description} class="max-w-[50%]" />
+				</div>
 			</div>
 		</div>
-		<div class=" bg-[rgba(255,255,255,0.15)] backdrop-blur p-4 rounded w-fit border border-white ">
-			<h1 class="font-extrabold text-3xl mb-4">Inventory</h1>
-			<div class="mb-4">
+		<div
+			class=" bg-[rgba(255,255,255,0.15)] backdrop-blur p-4 rounded border border-white col-span-4"
+		>
+			<h1 class="font-extrabold text-xl mb-4">Inventory</h1>
+			<div class="mb-4 flex justify-between items-center">
 				<label>onHand</label>
 				<input type="number" min="0" bind:value={onHand} />
 			</div>
-			<div class="mb-4">
+			<div class="mb-4 flex justify-between items-center">
 				<label>Available</label>
 				<input type="number" bind:value={available} />
 			</div>
-			<div class="mb-4">
+			<div class="mb-4 flex justify-between items-center">
 				<label>Committed</label>
 				<input type="number" bind:value={committed} />
 			</div>
 		</div>
-		<div class="bg-[rgba(255,255,255,0.15)] backdrop-blur p-4 rounded w-fit border border-white ">
-			<h1 class="font-extrabold text-3xl mb-4">Pricing Information</h1>
-			<div class="mb-4">
+		<div
+			class="bg-[rgba(255,255,255,0.15)] backdrop-blur p-4 rounded border border-white col-span-4"
+		>
+			<h1 class="font-extrabold text-xl mb-4">Pricing Information</h1>
+			<div class="mb-4 flex justify-between items-center">
 				<label>Currency (3-letter ISO)</label>
-				<input type="text" placeholder="USD" minlength="3" maxlength="3" bind:value={currency} />
+				<input
+					type="text"
+					placeholder="USD"
+					minlength="3"
+					maxlength="3"
+					bind:value={currency}
+					class="w-[25%]"
+				/>
 			</div>
-			<div class="mb-4">
+			<div class="mb-4 flex justify-between items-center">
 				<label>Price $</label>
 				<input type="number" step="0.01" placeholder="0.00" min="0.00" bind:value={price} />
 			</div>
-			<div class="mb-4">
+			<div class="mb-4 flex justify-between items-center">
 				<label>Tax Behavior </label>
-				<select name="tax_behavior" id="tax_behavior" required bind:value={taxBehavior}>
-					<option value="inclusive">Inclusive</option>
-					<option value="exclusive">Exclusive</option>
-					<option value="unspecified">Unspecified</option>
-				</select>
-				<span class="text-red-500 font-bold">*</span>
+				<div>
+					<select name="tax_behavior" id="tax_behavior" required bind:value={taxBehavior}>
+						<option value="inclusive">Inclusive</option>
+						<option value="exclusive">Exclusive</option>
+						<option value="unspecified">Unspecified</option>
+					</select>
+					<span class="text-red-500 font-bold">*</span>
+				</div>
 			</div>
-			<div class="mb-4">
+			<div class="mb-4 flex justify-between items-center">
 				<label>Statement Descriptor</label>
 				<input type="text" bind:value={statementDescriptor} />
 			</div>
 		</div>
-		<div class="bg-[rgba(255,255,255,0.15)] backdrop-blur w-full p-4 rounded border border-white ">
+		<!-- PRICING GRID ITEMS -->
+		<div
+			class="bg-[rgba(255,255,255,0.15)] backdrop-blur w-full p-4 rounded border border-white col-span-6"
+		>
 			<h1 class="font-extrabold text-xl mb-4">
 				Product Photos <span class="text-red-500">*</span>
 			</h1>
-			<div class="mb-4">
-				<label class={`custom-file-upload ${prodImg1 ? 'bg-green-500' : null} `}>
-					<input
-						type="file"
-						name="prod1"
-						id="prod1"
-						accept="image/*"
-						bind:files={prodImg1}
-						bind:this={input}
-						on:change={() => {
-							uploadToSB(prodImg1);
-							onChange();
-						}}
-					/>
-					UPLOAD
-				</label>
-
-				{#if showImage}
-					<img bind:this={image} src="" alt="Preview" />
-				{:else}
-					<span bind:this={placeholder}>Image Preview</span>
-				{/if}
+			<div class="w-[50%]">
+				<div class="mb-4 flex justify-between">
+					<label class={`custom-file-upload ${prodImg1 ? 'bg-green-500' : null} `}>
+						<input
+							type="file"
+							name="prod1"
+							id="prod1"
+							accept="image/*"
+							bind:files={prodImg1}
+							bind:this={input}
+							on:change={() => {
+								uploadToSB(prodImg1);
+								onChange();
+							}}
+						/>
+						UPLOAD
+					</label>
+				</div>
+				<div class="mb-4">
+					<label class={`custom-file-upload ${prodImg2 ? 'bg-green-500' : null} `}>
+						<input
+							type="file"
+							name="prod1"
+							id="prod1"
+							accept="image/*"
+							bind:files={prodImg2}
+							on:change={uploadToSB(prodImg2)}
+						/>
+						UPLOAD
+					</label>
+				</div>
+				<div class="mb-4">
+					<label class={`custom-file-upload ${prodImg3 ? 'bg-green-500' : null} `}>
+						<input
+							type="file"
+							name="prod1"
+							id="prod1"
+							accept="image/*"
+							bind:files={prodImg3}
+							on:change={uploadToSB(prodImg3)}
+						/>
+						UPLOAD
+					</label>
+				</div>
 			</div>
-			<div class="mb-4">
-				<label class={`custom-file-upload ${prodImg2 ? 'bg-green-500' : null} `}>
-					<input
-						type="file"
-						name="prod1"
-						id="prod1"
-						accept="image/*"
-						bind:files={prodImg2}
-						on:change={uploadToSB(prodImg2)}
-					/>
-					UPLOAD
-				</label>
-				{#if productImageUrlArray[1]}
-					<img src={productImageUrlArray[1]} alt={`prodname + img1`} />
-				{/if}
-			</div>
-			<div class="mb-4">
-				<label class={`custom-file-upload ${prodImg3 ? 'bg-green-500' : null} `}>
-					<input
-						type="file"
-						name="prod1"
-						id="prod1"
-						accept="image/*"
-						bind:files={prodImg3}
-						on:change={uploadToSB(prodImg3)}
-					/>
-					UPLOAD
-				</label>
-				{#if productImageUrlArray[2]}
-					<img src={productImageUrlArray[2]} alt={`prodname + img1`} />
-				{/if}
+			<div class="flex gap-1">
+				{#each productImageUrlArray as image}
+					<img src={image} alt="" class="w-1/3" />
+				{/each}
 			</div>
 		</div>
-		<div class="bg-[rgba(255,255,255,0.15)] backdrop-blur p-4 rounded w-fit border border-white ">
-			<h1 class="font-extrabold text-3xl mb-4">Shipping</h1>
-			<div class="mb-4">
+		<!-- SHIPPING GRID ITEM -->
+		<div
+			class="bg-[rgba(255,255,255,0.15)] backdrop-blur p-4 rounded border border-white col-span-6"
+		>
+			<h1 class="font-extrabold text-xl mb-4">Shipping</h1>
+			<div class="flex justify-between mb-4">
 				<label>Height (in)</label>
 				<input type="number" bind:value={height} />
 			</div>
-			<div class="mb-4">
+			<div class="flex justify-between mb-4">
 				<label>Width (in)</label>
 				<input type="number" bind:value={width} />
 			</div>
-			<div class="mb-4">
+			<div class="flex justify-between mb-4">
 				<label>Length (in)</label>
 				<input type="number" bind:value={length} />
 			</div>
-			<div class="mb-4">
+			<div class="flex justify-between mb-4">
 				<label>Weight (oz)</label>
 				<input type="number" bind:value={weight} />
 			</div>
-			<div class="mb-4">
+			<div class="flex justify-between">
 				<label>Shippable?</label>
 				<input type="checkbox" bind:checked={shippable} />
 			</div>
 		</div>
-		<div class="flex justify-center items-center">
+		<!-- CREATE BUTTON -->
+		<div class="flex justify-center items-center col-span-12">
 			<button
 				type="submit"
-				class="px-6 py-2 text-sm transition-colors duration-300  rounded-full shadow-xl text-emerald-100 bg-emerald-500 hover:bg-emerald-600 shadow-emerald-400/30"
+				class="px-6 py-2 text-sm transition-colors duration-300 rounded-full shadow-xl text-emerald-100 bg-emerald-500 hover:bg-emerald-600 shadow-emerald-400/30"
 				>Create</button
 			>
 		</div>

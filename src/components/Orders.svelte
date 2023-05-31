@@ -16,11 +16,11 @@
 	});
 </script>
 
-<h1>ORDERS</h1>
+<h1 class="text-center text-white font-bold">ORDERS</h1>
 <table class="min-w-full text-left text-sm font-light">
 	<thead class="border-b font-medium dark:border-neutral-500">
 		<tr>
-			<th scope="col" class="px-6 py-4">#</th>
+			<th scope="col" class="px-6 py-4">Order #</th>
 			<th scope="col" class="px-6 py-4">Created</th>
 			<th scope="col" class="px-6 py-4">Order Breakdown</th>
 			<th scope="col" class="px-6 py-4">Status</th>
@@ -29,7 +29,10 @@
 	</thead>
 	<tbody>
 		{#each orders as order}
-			<tr class="border-b dark:border-neutral-500 cursor-pointer" on:click={() => null}>
+			<tr
+				class="border-b dark:border-neutral-500 cursor-pointer hover:bg-[rgba(255,255,255,0.2)] hover:rounded-xl"
+				on:click={() => null}
+			>
 				<td class="whitespace-nowrap px-6 py-4 font-medium">{order.id}</td>
 				<td class="whitespace-nowrap px-6 py-4"
 					>{new Intl.DateTimeFormat(['en-us'], {
@@ -38,7 +41,7 @@
 						timeZone: order.created_at.timezone
 					}).format(new Date(order.created_at))}</td
 				>
-				<td class="whitespace-nowrap px-6 py-4 "
+				<td class="whitespace-nowrap px-6 py-4"
 					>{#each order.metadata as item}
 						<div class="flex justify-between">
 							<div>
@@ -50,7 +53,7 @@
 						</div>
 					{/each}</td
 				>
-				<td class="whitespace-nowrap px-6 py-4 "> PAID </td>
+				<td class="whitespace-nowrap px-6 py-4"> PAID </td>
 				{#if order.shipping}
 					<td class="flex flex-col">
 						<div>{order.shipping?.name}</div>

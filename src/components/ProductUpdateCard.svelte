@@ -1,5 +1,6 @@
 <script>
 	import { fade } from 'svelte/transition';
+	import Icon from '@iconify/svelte';
 	let priceChangeDetected = false;
 	export let productSelected;
 
@@ -34,18 +35,20 @@
 <div
 	in:fade={{ delay: 400 }}
 	out:fade
-	class="px-6 py-2 bg-gradient-to-tr from-[#000428] to-[#004e92] rounded-xl text-white "
+	class="px-6 py-2 bg-gradient-to-tr from-[#000428] to-[#004e92] rounded-xl text-white"
 >
 	<div class="text-center">
 		{productSelected.name}
 	</div>
 	<div class="grid grid-cols-3 gap-4 p-2">
-		{#each [images[index]] as src (index)}
-			<img {src} alt="" />
-		{/each}
-		<div class="flex justify-between absolute left-8 w-[17rem]">
-			<button on:click={next}>Next</button>
-			<button on:click={prev}>Prev</button>
+		<div class="relative">
+			{#each [images[index]] as src (index)}
+				<img {src} alt="" />
+			{/each}
+			<div class="flex justify-between absolute bottom-0 left-0 right-0 w-full h-full">
+				<button on:click={next}><Icon icon="gg:arrow-left-o" /></button>
+				<button on:click={prev}><Icon icon="gg:arrow-right-o" /></button>
+			</div>
 		</div>
 		<div class="flex gap-4 items-center py-2">
 			<label>Name</label>
@@ -90,7 +93,7 @@
 		</div>
 		<div class="py-2">
 			<div class="font-bold text-center">Dimensions</div>
-			<div class="flex  items-center justify-between">
+			<div class="flex items-center justify-between">
 				<div class="">Height</div>
 				<input
 					type="number"

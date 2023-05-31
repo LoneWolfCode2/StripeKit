@@ -23,16 +23,16 @@
 	let products = data.products.data;
 </script>
 
-<div class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 min-h-screen p-2">
+<div class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 min-h-screen p-12">
 	<form action="/logout" method="POST" class="float-right mr-16 text-white text-3xl">
 		<button type="submit">Logout</button>
 	</form>
 
-	<div class="max-w-screen-xl mx-auto ">
+	<div class="max-w-screen-xl mx-auto">
 		<div class="p-4">
 			<h1 class="text-center font-extrabold text-white">Dashboard</h1>
 		</div>
-		<div class="flex flex-col gap-32 mt-8 items-center absolute md:left-40">
+		<div class="flex flex-col gap-32 items-center absolute md:left-40">
 			<button
 				class=""
 				on:click={() => (action === 'create-product' ? (action = '') : (action = 'create-product'))}
@@ -68,7 +68,7 @@
 				</div>
 			</button>
 		</div>
-		<div class="ml-32 md:ml-40 max-w-screen-lg -top-36">
+		<div class=" -top-36">
 			{#if data.session && action === 'create-product'}
 				<CreateAProduct />
 			{/if}

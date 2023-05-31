@@ -37,7 +37,9 @@
 	}
 </script>
 
-<div class="p-4 my-2 rounded bg-[#33a8bdc9] border border-white flex justify-between text-right">
+<div
+	class="p-4 my-2 rounded border border-white flex justify-between bg-[rgba(255,255,255,0.2)] text-right"
+>
 	<div class="min-w-[200px]">
 		<div class="text-left">{product.name}</div>
 		{#each [images[index]] as src (index)}
@@ -62,7 +64,7 @@
 			<div class="flex justify-between mx-4">
 				<input
 					type="number"
-					class="p-2 my-2 text-right bg-[#2d48f77d] w-16 rounded"
+					class="p-2 my-2 text-right w-16 border bg-transparent border-solid border-white rounded"
 					bind:value={increaseAmt}
 				/>
 				<button class="w-2" on:click={increaseInventory}><FaPlus /></button>
@@ -73,7 +75,7 @@
 			<div class="flex justify-between mx-4">
 				<input
 					type="number"
-					class="p-2 my-2  text-right bg-[#2d48f77d] w-16 rounded"
+					class="p-2 my-2 text-right bg-transparent border border-solid border-white w-16 rounded"
 					bind:value={decreaseAmt}
 				/>
 				<button class="w-2" on:click={decreaseInventory}><FaMinus /></button>

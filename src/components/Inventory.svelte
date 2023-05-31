@@ -5,7 +5,7 @@
 </script>
 
 <div>
-	{#each products as product}
+	{#each products.filter((product) => product.active) as product}
 		<InventoryProducts {product} />
 	{/each}
 </div>
